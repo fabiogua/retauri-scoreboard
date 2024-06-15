@@ -1,0 +1,65 @@
+{
+  "build": {
+    "beforeDevCommand": "pnpm dev",
+    "beforeBuildCommand": "pnpm build",
+    "devPath": "http://localhost:1420",
+    "distDir": "../dist"
+  },
+  "package": {
+    "productName": "retauri-scoreboard",
+    "version": "../package.json"
+  },
+  "tauri": {
+    "allowlist": {
+      "all": false,
+      "shell": {
+        "all": false,
+        "open": true
+      },
+      "dialog": {
+        "all": true
+      }
+    },
+    "windows": [
+      {
+        "label": "main",
+        "title": "Retauri Scoreboard",
+        "width": 800,
+        "height": 600,
+        "resizable": true,
+        "url": "index.html"
+      },
+      {
+        "label": "scoreboard",
+        "title": "Scoreboard",
+        "width": 800,
+        "height": 600,
+        "resizable": true,
+        "url": "scoreboard.html"
+      },
+      {
+        "label": "controlboard",
+        "title": "Controlboard",
+        "width": 800,
+        "height": 600,
+        "resizable": true,
+        "url": "controlboard.html"
+      }
+    ],
+    "security": {
+      "csp": null
+    },
+    "bundle": {
+      "active": true,
+      "targets": "all",
+      "identifier": "com.guarino.dev",
+      "icon": [
+        "icons/32x32.png",
+        "icons/128x128.png",
+        "icons/128x128@2x.png",
+        "icons/icon.icns",
+        "icons/icon.ico"
+      ]
+    }
+  }
+}
