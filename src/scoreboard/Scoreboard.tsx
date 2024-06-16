@@ -9,6 +9,7 @@ function Scoreboard() {
     name: "Home Team",
     score: 0,
     side: TeamEnum.home,
+    timeouts: 0,
     players: [...Array(13)].map((_, i) => {
       return {
         number: i + 1,
@@ -23,6 +24,7 @@ function Scoreboard() {
     name: "Guest Team",
     score: 0,
     side: TeamEnum.guest,
+    timeouts: 0,
     players: [...Array(13)].map((_, i) => {
       return {
         number: i + 1,
