@@ -5,6 +5,7 @@ use std::sync::{Arc, Mutex};
 
 use serde::{Deserialize, Serialize};
 use tauri::{command, generate_context, generate_handler, AppHandle, Builder, Manager};
+use tokio::time::interval;
 
 #[derive(Serialize, Deserialize, Clone)]
 struct ScorePayload {
@@ -77,10 +78,8 @@ pub struct TimerState {
     time: Arc<Mutex<u32>>,
 }
 
-// remember to call `.manage(MyState::default())`
 #[command]
 fn toggle_timer(state: tauri::State<TimerState>) {
-    println!("Toggle timer");
     let mut is_running = state.is_running.lock().unwrap();
     *is_running = !*is_running;
 }
@@ -95,43 +94,21 @@ fn main() {
             update_exclusions,
             update_goals,
             update_timeouts,
-            toggle_timer
+            toggle_timer,
         ])
         .setup(|app| {
-            // ...
-
+            const TIME_STEP: u8 = 10;
             let app_handle = app.handle();
             tauri::async_runtime::spawn(async move {
-                const TIME_STEP: u8 = 1;
+                let mut interval = interval(tokio::time::Duration::from_millis(TIME_STEP.into()));
 
                 loop {
-                    std::thread::sleep(std::time::Duration::from_millis(TIME_STEP.into()));
+                    interval.tick().await;
 
-                    let state = app_handle.state::<TimerState>();
-                    let is_running = state.is_running.lock().unwrap();
-                    let mut time = state.time.lock().unwrap();
-
-                    if !*is_running {
-                        continue;
-                    }
-
-                    if *time >= TIME_STEP.into() {
-                        *time -= TIME_STEP as u32;
-                    } else {
-                        println!("Counter value is less than 10, cannot subtract further.");
-                        break;
-                    }
-
-                    // when time is equal to a whole second, update the time
-                    if *time % 1000 != 0 {
-                        continue;
-                    }
-
-                    let time_in_seconds = *time / 1000;
-                    let seconds = time_in_seconds % 60;
-                    let minutes = time_in_seconds / 60;
-                    let formatted_time: String = format!("{}:{}", minutes, seconds);
-                    update_time(app_handle.clone(), formatted_time);
+                    task( 
+                        app_handle.clone(),
+                        TIME_STEP
+                    ).await;
                 }
             });
 
@@ -148,4 +125,33 @@ fn main() {
     // app.get_window("controlboard".into()).expects("error while getting controlboard window").hide().expect("error while hiding controlboard window");
 
     app.run(|_, _| {});
+}
+
+async fn task( app_handle: AppHandle, time_step: u8) {
+
+    let state = app_handle.state::<TimerState>();
+    let is_running = state.is_running.lock().unwrap();
+    let mut time = state.time.lock().unwrap();
+
+    if !*is_running {
+        return;
+    }
+
+    if *time >= time_step.into() {
+        *time -= time_step as u32;
+    } else {
+        println!("Counter value is less than 10, cannot subtract further.");
+        return;
+    }
+
+    // when time is equal to a whole second, update the time
+    if *time % 1000 != 0 {
+        return;
+    }
+
+    let time_in_seconds = *time / 1000;
+    let seconds = time_in_seconds % 60;
+    let minutes = time_in_seconds / 60;
+    let formatted_time: String = format!("{}:{}", minutes, seconds);
+    update_time(app_handle.clone(), formatted_time);
 }
