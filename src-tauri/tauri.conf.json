@@ -32,7 +32,7 @@
       {
         "label": "scoreboard",
         "title": "Scoreboard",
-        "width": 800,
+        "width": 1200,
         "height": 600,
         "resizable": true,
         "url": "scoreboard.html"
@@ -40,7 +40,7 @@
       {
         "label": "controlboard",
         "title": "Controlboard",
-        "width": 800,
+        "width": 1400,
         "height": 600,
         "resizable": true,
         "url": "controlboard.html"

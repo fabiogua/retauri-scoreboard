@@ -1,41 +1,80 @@
-import { useState } from "react";
-import "./Scoreboard.css";
+import { invoke } from "@tauri-apps/api";
+import "./Player.css";
+import { Player, TeamEnum } from "../Data";
 
-function Player() {
+function PlayerUi({ player, team }: { player: Player; team: TeamEnum }) {
+  const incrementPlayerExclusions = async (
+    team: TeamEnum,
+    playerNumber: number
+  ) => {
+    if (player.exclusions == 3) return;
 
-  const [name, setName] = useState("");
-  const [number, setNumber] = useState(0);
-  const [exclusions, setExclusions] = useState(0);
-  const [goals, setGoals] = useState(0);
+    await invoke("update_exclusions", {
+      team,
+      index: playerNumber - 1,
+      exclusions: player.exclusions + 1,
+    });
+  };
+
+  const decrementPlayerExclusions = async (
+    team: TeamEnum,
+    playerNumber: number
+  ) => {
+    if (player.exclusions == 0) return;
+    await invoke("update_exclusions", {
+      team,
+      index: playerNumber - 1,
+      exclusions: player.exclusions - 1,
+    });
+  };
+
+  const incrementPlayerGoals = async (team: TeamEnum, playerNumber: number) => {
+    console.log("incrementing goals" + player.goals );
+
+    await invoke("update_goals", {
+      team,
+      index: playerNumber - 1,
+      goals: player.goals + 1,
+    });
+  };
+
+  const decrementPlayerGoals = async (team: TeamEnum, playerNumber: number) => {
+    if (player.goals == 0) return;
+    await invoke("update_goals", {
+      team,
+      index: playerNumber - 1,
+      goals: player.goals - 1,
+    });
+  };
 
   return (
     <div className="player">
-      <input
-        type="text"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        placeholder="Player name"
-      />
-      <input
-        type="number"
-        value={number}
-        onChange={(e) => setNumber(parseInt(e.target.value))}
-        placeholder="Number"
-      />
-      <input
-        type="number"
-        value={exclusions}
-        onChange={(e) => setExclusions(parseInt(e.target.value))}
-        placeholder="Exclusions"
-      />
-      <input
-        type="number"
-        value={goals}
-        onChange={(e) => setGoals(parseInt(e.target.value))}
-        placeholder="Goals"
-      />
+      <div className="player-number">
+        <span>{player.number}</span>
+      </div>
+      <div className="player-name">
+        <span>{player.name}</span>
+      </div>
+      <div className="player-exclusions">
+        <span>{player.exclusions}</span>
+        <button onClick={() => incrementPlayerExclusions(team, player.number)}>
+          +
+        </button>
+        <button onClick={() => decrementPlayerExclusions(team, player.number)}>
+          -
+        </button>
+      </div>
+      <div className="player-goals">
+        <span className="goals">{player.goals}</span>
+        <button onClick={() => incrementPlayerGoals(team, player.number)}>
+          +
+        </button>
+        <button onClick={() => decrementPlayerGoals(team, player.number)}>
+          -
+        </button>
+      </div>
     </div>
   );
 }
 
-export default Player;
+export default PlayerUi;
