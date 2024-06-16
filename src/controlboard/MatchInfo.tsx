@@ -3,7 +3,7 @@ import "./MatchInfo.css";
 import { invoke } from "@tauri-apps/api";
 
 function MatchInfo({ time }: { time: string }) {
-  const [period, setPeriod] = useState(1);
+  const [period] = useState(1);
 
   const toggle_timer = async () => {
     console.log("Toggling timer");
