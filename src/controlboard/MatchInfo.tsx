@@ -1,41 +1,135 @@
 import { useState } from "react";
-import "./MatchInfo.css";
+import "../styles/MatchInfo.css";
 import { invoke } from "@tauri-apps/api";
 
-function MatchInfo({ time }: { time: string }) {
-  const [period] = useState(1);
+function MatchInfo({ time, quater, isTimeout }: { time: string; quater: number, isTimeout: boolean}) {
+  const [isTimeEditing, setIsTimeEditing] = useState(false);
+  const [isQuaterEditing, setIsQuaterEditing] = useState(false);
+  const [tmpTime, setTmpTime] = useState(time);
+  const [tmpQuater, setTmpQuater] = useState(quater.toString());
 
   const toggle_timer = async () => {
-    console.log("Toggling timer");
     await invoke("toggle_timer");
   };
 
-  const increasePeriod = async () => {
-    if (period == 4) return;
-
-    await invoke("update_period", {
-      period: period + 1,
-    });
+  const toggle_timeout = async () => {
+    await invoke("toggle_timeout");
   };
 
-  const decreasePeriod = async () => {
-    if (period == 1) return;
-    await invoke("update_period", {
-      period: period - 1,
-    });
+  async function setTime() {
+    setIsTimeEditing(false);
+    const newTime =
+      (Number(tmpTime.substring(0, 2)) * 60 + Number(tmpTime.substring(3, 5)) )* 1000;
+    await invoke("set_time", {newTime: newTime, isTimeout: isTimeout} );
+  }
+
+  async function setQuater() {
+    setIsQuaterEditing(false);
+    const newQuater = Number(tmpQuater);
+    await invoke("set_quater", {newQuater: newQuater} );
+  }
+
+  const handleChange = (event: any) => {
+    let value: string = event.target.value;
+
+    if (value.length > 5) {
+      return;
+    }
+
+    if (value.length === 3 || value.length === 4) {
+      const dd = value.substring(2, 3);
+      const lastChar = value.substring(2);
+      if (dd != ":") {
+        value = value.substring(0, 2) + ":" + lastChar;
+      }
+    }
+
+    switch (value.length) {
+      case 1:
+        if (!value.match(/[0-5]/)) return;
+        break;
+      case 2:
+        if (!value.substring(0, 2).match(/[0-5][0-9]/)) return;
+        break;
+      case 3:
+        if (!value.substring(0, 3).match(/[0-5][0-9]:/)) return;
+        break;
+      case 4:
+        if (!value.substring(0, 4).match(/[[0-5][0-9]:[0-5]/)) return;
+        break;
+      case 5:
+        if (!value.substring(0, 5).match(/[0-5][0-9]:[0-5][0-9]/)) return;
+        break;
+      default:
+        break;
+    }
+
+    setTmpTime(value);
   };
+
+  const handleQuaterChange = (event: any) => {
+    let value: string = event.target.value;
+
+    if (value.length > 1) {
+      return;
+    }
+
+    if (value.length === 0) {
+      setTmpQuater("");
+    }
+
+    if (!value.match(/[1-4]/)) return;
+
+    setTmpQuater(value);
+  }
 
   return (
     <div className="match-info">
       <div className="match-info-time">
         <div className="time">
-          <h1>{time}</h1>
+          {isTimeEditing ? (
+            <div className="time-input-box">
+              <input
+                className="time-input"
+                type="text"
+                value={tmpTime}
+                placeholder="mm:ss"
+                onChange={(e) => {
+                  handleChange(e);
+                }}
+                onKeyDown={(e) => {
+                  handleChange(e);
+                  if (e.key === "Enter") setTime();
+                  if (e.key === "Escape") setIsTimeEditing(false);
+                }}
+              />
+            </div>
+          ) : (
+            <h1 onDoubleClick={() => {setIsTimeEditing(true); setTmpTime("")}}>{time}</h1>
+          )}
           <button onClick={toggle_timer}>Toggle</button>
+          <button onClick={toggle_timeout}>Timeout</button>
         </div>
         <div className="period">
-          <h3>{period}</h3>
-          <button onClick={increasePeriod}>+</button>
-          <button onClick={decreasePeriod}>-</button>
+
+          {isQuaterEditing ? (
+            <div className="quater-input-box">
+              <input
+                className="quater-input"
+                type="string"
+                value={tmpQuater}
+                onChange={(e) => {
+                  handleQuaterChange(e);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") setQuater();
+                  if (e.key === "Escape") setIsQuaterEditing(false);
+                }}
+              />
+            </div>
+          ) : (
+            <h3 onDoubleClick={() => {setIsQuaterEditing(true); setTmpQuater(quater.toString())}}>{quater}</h3>
+          )}
         </div>
       </div>
     </div>
