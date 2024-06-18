@@ -2,10 +2,17 @@ import { useEffect, useState } from "react";
 import "../styles/Controlboard.css";
 import { listen } from "@tauri-apps/api/event";
 import TeamUi from "./Team";
-import { MatchStats, Team, TeamEnum, TeamStats, TimeStats, TimeoutStats } from "../Data";
+import {
+  MatchStats,
+  Team,
+  TeamEnum,
+  TeamStats,
+  TimeStats,
+  TimeoutStats,
+} from "../Data";
 import MatchInfo from "./MatchInfo";
 
-// import beep from "../../src/assets/buzzer.wav";
+import buzzer from "../../src/assets/buzzer.mp3"
 
 function Controlboard() {
   const [homeTeam, setHomeTeam] = useState<Team>({
@@ -37,40 +44,38 @@ function Controlboard() {
   });
 
   const mapTeamStatsToTeam = (teamStats: TeamStats): Team => {
-    
     console.log(teamStats);
 
     return {
       name: teamStats.name,
-      score: teamStats.player_stats.reduce((acc, player) => acc + player.goals, 0),
+      score: teamStats.player_stats.reduce(
+        (acc, player) => acc + player.goals,
+        0
+      ),
       timeouts: teamStats.timeouts,
       players: teamStats.player_stats,
     };
   };
 
-  
-
   const [time, setTime] = useState("08:00");
   const [quater, setQuater] = useState(1);
   const [isTimeout, setIsTimeout] = useState(false);
 
-
-  // let audio = new Audio(beep);
+  let audio = new Audio(buzzer);
 
   useEffect(() => {
+    const handleKeyPress = (event:any) => {
+      console.log(event.key);
+      if (event.key === 'Enter') {
+        playSound();
+      }
+    };
 
-    // const handleKeyPress = (event:any) => {
-    //   console.log(event.key);
-    //   if (event.key === 'Enter') {
-    //     playSound();
-    //   }
-    // };
-
-    // const handleKeyUp = (event:any) => {
-    //   if (event.key === 'Enter') {
-    //     stopSound();
-    //   }
-    // }
+    const handleKeyUp = (event:any) => {
+      if (event.key === 'Enter') {
+        stopSound();
+      }
+    }
 
     const unlistenMatchStats = listen("update_match_stats", (event: any) => {
       const payload: MatchStats = event.payload;
@@ -104,11 +109,10 @@ function Controlboard() {
       // }
     });
 
-
     const updateTimeStats = listen("update_time_stats", (event: any) => {
-      const payload : TimeStats= event.payload;
+      const payload: TimeStats = event.payload;
 
-      if (payload.time < 60*1000) {
+      if (payload.time < 60 * 1000) {
         const timeInTenMiliseconds = payload.time / 10;
         const tenSeconds = Math.floor(timeInTenMiliseconds / 1000);
         const seconds = Math.floor((timeInTenMiliseconds % 1000) / 100);
@@ -116,55 +120,50 @@ function Controlboard() {
         const miliseconds = Math.floor(timeInTenMiliseconds % 10);
 
         setTime(`${tenSeconds}${seconds}:${tenMiliseconds}${miliseconds}`);
-      }
-      else {
-      const timeInSec = payload.time / 1000;
+      } else {
+        const timeInSec = payload.time / 1000;
 
-      const tenMinutes = Math.floor(timeInSec / 600);
-      const minutes = Math.floor(timeInSec / 60);
+        const tenMinutes = Math.floor(timeInSec / 600);
+        const minutes = Math.floor(timeInSec / 60);
 
-      const tenSeconds = Math.floor((timeInSec % 60) / 10);
-      const seconds = Math.floor((timeInSec % 60) % 10);
+        const tenSeconds = Math.floor((timeInSec % 60) / 10);
+        const seconds = Math.floor((timeInSec % 60) % 10);
 
-      setTime(`${tenMinutes}${minutes}:${tenSeconds}${seconds}`);
+        setTime(`${tenMinutes}${minutes}:${tenSeconds}${seconds}`);
       }
       setQuater(payload.quater);
       setIsTimeout(false);
     });
 
-    // window.addEventListener('keypress', handleKeyPress);
-    // window.addEventListener('keyup', handleKeyUp);
+    window.addEventListener('keypress', handleKeyPress);
+    window.addEventListener('keyup', handleKeyUp);
 
     return () => {
       updateTimeStats.then((f) => f());
       unlistenMatchStats.then((f) => f());
       updateTimeoutStats.then((f) => f());
-      // window.removeEventListener('keypress', handleKeyPress);
-      // window.removeEventListener('keyup', handleKeyUp);
+      window.removeEventListener('keypress', handleKeyPress);
+      window.removeEventListener('keyup', handleKeyUp);
     };
   }, []);
 
+  function playSound () {
+      audio.volume = 0.5;
+      audio.play()
+  };
 
-// function playSound () {
-//     audio.volume = 0.5;
-//     audio.play()
-// };
-
-// function stopSound () {
-//   if (!audio.paused) {
-//     audio.pause();
-//     audio.currentTime = 0;
-//   }
-// }
+  function stopSound () {
+    if (!audio.paused) {
+      audio.pause();
+      audio.currentTime = 0;
+    }
+  }
 
   return (
-    <div className="main">
-      <h1>Score Controller</h1>
-      <div className="teams">
-        <TeamUi team={homeTeam} side={TeamEnum.home} />
-        <MatchInfo time={time} quater={quater} isTimeout={isTimeout}/>
-        <TeamUi team={guestTeam} side={TeamEnum.guest} />
-      </div>
+    <div className="teams">
+      <TeamUi team={homeTeam} side={TeamEnum.home} />
+      <MatchInfo time={time} quater={quater} isTimeout={isTimeout} />
+      <TeamUi team={guestTeam} side={TeamEnum.guest} />
     </div>
   );
 }

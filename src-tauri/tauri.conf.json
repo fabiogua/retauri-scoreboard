@@ -26,10 +26,10 @@
     "windows": [
       {
         "label": "main",
-        "title": "Retauri Scoreboard",
-        "width": 800,
+        "title": "Einstellungen",
         "resizable": true,
-        "url": "index.html"
+        "height": 700,
+        "url": "index.html/#/settings"
       },
       {
         "label": "scoreboard",
@@ -40,7 +40,7 @@
       },
       {
         "label": "controlboard",
-        "title": "Controlboard",
+        "title": "Controlpanel",
         "width": 1400,
         "resizable": true,
         "url": "index.html/#/controlboard"

@@ -537,6 +537,34 @@ fn reset_match(app: AppHandle) {
         .reset(app.clone());
 }
 
+#[command]
+fn start_match(app: AppHandle) {
+
+    app.get_window("main")
+        .expect("error while getting main window").hide().expect("error while hiding main window");
+
+    app.get_window("scoreboard")
+        .expect("error while getting main window").show().expect("error while showing main window");
+
+    app.get_window("controlboard").expect("error while getting controlboard window").show().expect("error while showing controlboard window");
+}
+
+#[command]
+fn save_settings(app: AppHandle, quatertime: u32, shortpause: u32, longpause: u32, timeout: u32) {
+    let app_state = app
+        .try_state::<AppState>()
+        .expect("error while getting app state");
+
+    let settings = app_state.settings.lock().unwrap();
+
+    *settings.quater_length.lock().unwrap() = quatertime;
+    *settings.short_pause_length.lock().unwrap() = shortpause;
+    *settings.long_pause_length.lock().unwrap() = longpause;
+    *settings.timeout_length.lock().unwrap() = timeout;
+
+    app_state.time_stats.lock().unwrap().set_time(app.clone(), quatertime);
+}
+
 fn main() {
     let match_settings = MatchSettings {
         quater_length: Arc::new(Mutex::new(8 * 60 * 1000)), //* 100
@@ -566,6 +594,8 @@ fn main() {
             remove_timeout,
             reset_match,
             toggle_timeout,
+            start_match,
+            save_settings
         ])
         .setup(|app| {
             const TIME_STEP: u8 = 10;
@@ -608,12 +638,12 @@ fn main() {
         .build(generate_context!())
         .expect("error while building tauri application");
 
-    app.get_window("main".into())
-        .expect("error while getting main window")
-        .hide()
-        .expect("error while showing main window");
-    // app.get_window( "scoreboard".into()).expect("error while getting scoreboard window").hide().expect("error while hiding scoreboard window");
-    // app.get_window("controlboard".into()).expects("error while getting controlboard window").hide().expect("error while hiding controlboard window");
+    // app.get_window("main".into())
+    //     .expect("error while getting main window")
+    //     .hide()
+    //     .expect("error while showing main window");
+    app.get_window( "scoreboard".into()).expect("error while getting scoreboard window").hide().expect("error while hiding scoreboard window");
+    app.get_window("controlboard".into()).expect("error while getting controlboard window").hide().expect("error while hiding controlboard window");
 
     app.run(|_, _| {});
 }

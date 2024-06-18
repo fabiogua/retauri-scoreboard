@@ -112,7 +112,6 @@ function Controlboard() {
 
   return (
     <div className="main">
-      <h1>Score Controller</h1>
       <div className="teams">
         <TeamUi team={homeTeam} />
         <MatchInfo time={time} quater={quater}/>
