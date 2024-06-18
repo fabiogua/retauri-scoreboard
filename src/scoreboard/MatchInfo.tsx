@@ -1,8 +1,6 @@
-import { useState } from "react";
 import"../styles/MatchInfo.css";
 
-function MatchInfo({ time }: { time: string }) {
-  const [period] = useState(1);
+function MatchInfo({ time, quater }: { time: string, quater: number}) {
 
   return (
     <div className="match-info">
@@ -11,7 +9,7 @@ function MatchInfo({ time }: { time: string }) {
           <h1>{time}</h1>
         </div>
         <div className="period">
-          <h3>{period}</h3>
+          <h3>{quater}</h3>
         </div>
       </div>
     </div>

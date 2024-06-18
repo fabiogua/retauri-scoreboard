@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
-import"../styles/Scoreboard.css";
+import "../styles/Controlboard.css";
 import { listen } from "@tauri-apps/api/event";
 import TeamUi from "./Team";
-import { Team, TeamEnum } from "../Data";
+import { MatchStats, Team, TeamStats, TimeStats, TimeoutStats } from "../Data";
 import MatchInfo from "./MatchInfo";
 
 function Controlboard() {
- 
   const [homeTeam, setHomeTeam] = useState<Team>({
     name: "Home Team",
     score: 0,
-    side: TeamEnum.home,
     timeouts: 0,
     players: [...Array(13)].map((_, i) => {
       return {
@@ -25,7 +23,6 @@ function Controlboard() {
   const [guestTeam, setGuestTeam] = useState<Team>({
     name: "Guest Team",
     score: 0,
-    side: TeamEnum.guest,
     timeouts: 0,
     players: [...Array(13)].map((_, i) => {
       return {
@@ -37,83 +34,89 @@ function Controlboard() {
     }),
   });
 
-  const [time, setTime] = useState("00:00");
+  const mapTeamStatsToTeam = (teamStats: TeamStats): Team => {
+    
+    console.log(teamStats);
+
+    return {
+      name: teamStats.name,
+      score: teamStats.player_stats.reduce((acc, player) => acc + player.goals, 0),
+      timeouts: teamStats.timeouts,
+      players: teamStats.player_stats,
+    };
+  };
+
+  
+
+  const [time, setTime] = useState("08:00");
   const [quater, setQuater] = useState(1);
 
-  useEffect(() => {
-    const unlistenExclusion = listen(
-      "update_exclusions",
-      (event: any) => {
-        const payload = event.payload;
-        const team = payload.team === "home" ? homeTeam : guestTeam;
-        const players = team.players;
-        players[payload.index].exclusions = payload.exclusions;
-        payload.team === "home"
-          ? setHomeTeam({ ...team, players: [...players] })
-          : setGuestTeam({ ...team, players: [...players] });
-      }
-    );
 
-    const unlistenGoal = listen("update_goals", (event: any) => {
-      const payload = event.payload;
-      const team = payload.team === "home" ? homeTeam : guestTeam;
-      const players = team.players;
-      players[payload.index].goals = payload.goals;
-      team.score = players.reduce((acc, player) => acc + player.goals, 0);
-      payload.team === "home"
-        ? setHomeTeam({ ...team, players: [...players] })
-        : setGuestTeam({ ...team, players: [...players] });
+  useEffect(() => {
+    const unlistenMatchStats = listen("update_match_stats", (event: any) => {
+      const payload: MatchStats = event.payload;
+
+      const home = mapTeamStatsToTeam(payload.home as TeamStats);
+      const guest = mapTeamStatsToTeam(payload.guest as TeamStats);
+
+      setHomeTeam(home);
+      setGuestTeam(guest);
     });
 
-    const unlistenTimeout = listen("update_timeouts", (event: any) => {
-      const payload = event.payload;
-      const team = payload.team === "home" ? homeTeam : guestTeam;
-      team.timeouts = payload.timeouts;
-      payload.team === "home"
-        ? setHomeTeam({ ...team })
-        : setGuestTeam({ ...team });
-    }
-    );
+    const updateTimeoutStats = listen("update_timeout_stats", (event: any) => {
+      const payload: TimeoutStats = event.payload;
+
+      const timeInTenMiliseconds = payload.time / 10;
+      const tenSeconds = Math.floor(timeInTenMiliseconds / 1000);
+      const seconds = Math.floor((timeInTenMiliseconds % 1000) / 100);
+      const tenMiliseconds = Math.floor((timeInTenMiliseconds % 100) / 10);
+      const miliseconds = Math.floor(timeInTenMiliseconds % 10);
+
+      setTime(`${tenSeconds}${seconds}:${tenMiliseconds}${miliseconds}`);
+    });
 
 
     const updateTimeStats = listen("update_time_stats", (event: any) => {
-      const payload = event.payload;
+      const payload : TimeStats= event.payload;
 
-      const timeInSec = payload.time/1000;
+      if (payload.time < 60*1000) {
+        const timeInTenMiliseconds = payload.time / 10;
+        const tenSeconds = Math.floor(timeInTenMiliseconds / 1000);
+        const seconds = Math.floor((timeInTenMiliseconds % 1000) / 100);
+        const tenMiliseconds = Math.floor((timeInTenMiliseconds % 100) / 10);
+        const miliseconds = Math.floor(timeInTenMiliseconds % 10);
+
+        setTime(`${tenSeconds}${seconds}:${tenMiliseconds}${miliseconds}`);
+      }
+      else {
+      const timeInSec = payload.time / 1000;
 
       const tenMinutes = Math.floor(timeInSec / 600);
       const minutes = Math.floor(timeInSec / 60);
 
-      const tenSeconds = Math.floor(timeInSec % 60 / 10);
-      const seconds = Math.floor(timeInSec % 60 % 10);
-
+      const tenSeconds = Math.floor((timeInSec % 60) / 10);
+      const seconds = Math.floor((timeInSec % 60) % 10);
 
       setTime(`${tenMinutes}${minutes}:${tenSeconds}${seconds}`);
+      }
       setQuater(payload.quater);
-
     });
-
-    const updateTime = listen("update_time", (event: any) => {
-      const payload = event.payload;
-      setTime(payload);
-    });
-
 
     return () => {
-      unlistenExclusion.then((f) => f());
-      unlistenGoal.then((f) => f());
-      unlistenTimeout.then((f) => f());
-      updateTime.then((f) => f());
+      updateTimeStats.then((f) => f());
+      unlistenMatchStats.then((f) => f());
+      updateTimeoutStats.then((f) => f());
     };
   }, []);
 
+
   return (
-    <div>
+    <div className="main">
       <h1>Score Controller</h1>
       <div className="teams">
         <TeamUi team={homeTeam} />
-        <MatchInfo time={time}/>
-        <TeamUi team={guestTeam}/>
+        <MatchInfo time={time} quater={quater}/>
+        <TeamUi team={guestTeam} />
       </div>
     </div>
   );

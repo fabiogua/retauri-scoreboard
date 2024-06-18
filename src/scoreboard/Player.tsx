@@ -1,7 +1,7 @@
 import { Player } from "../Data";
 import"../styles/Player.css";
 
-function PlayerUi({ player }: { player: Player}) {
+function PlayerUi({ player}: { player: Player}) {
 
   return (
     <div className="player">
