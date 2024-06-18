@@ -5,7 +5,7 @@ import TeamUi from "./Team";
 import { MatchStats, Team, TeamEnum, TeamStats, TimeStats, TimeoutStats } from "../Data";
 import MatchInfo from "./MatchInfo";
 
-import beep from "../../src/assets/buzzer.wav";
+// import beep from "../../src/assets/buzzer.wav";
 
 function Controlboard() {
   const [homeTeam, setHomeTeam] = useState<Team>({
