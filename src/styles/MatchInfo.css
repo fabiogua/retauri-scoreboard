@@ -1,0 +1,48 @@
+.match-info{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 330px;
+  
+    h1{
+        font-size: 4rem;
+        font-weight: 700;
+        width: 100%;
+    }
+
+    h3{
+        font-size: 2rem;
+        font-weight: 500;
+        width: 100%;
+    }
+
+}
+
+.time{
+    width: 100%;
+}
+
+.time-input-box{
+    padding: 20px;
+    height: 150px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.time-input{
+    font-size: 2rem;
+    width: 100px;
+}
+
+.period{
+    font-size: 2rem;
+    font-weight: 500;
+    justify-content: center;
+}
+
+.quater-input{
+    margin: 10px;
+    font-size: 2rem;
+    width: 30px;
+}

@@ -1,26 +1,18 @@
 import { invoke } from "@tauri-apps/api";
-import { Team } from "../Data";
+import { Team, TeamEnum } from "../Data";
 import PlayerUi from "./Player";
-import "./Team.css";
+import "../styles/Team.css";
 
-function TeamUi({ team }: { team: Team }) {
-  const incrementTimeout = async (team: Team) => {
-    if (team.timeouts == 2) return;
-    team.timeouts += 1;
-
-    await invoke("update_timeouts", {
-      team: team.side,
-      timeouts: team.timeouts,
+function TeamUi({ team, side }: { team: Team; side: TeamEnum }) {
+  const addTimeout = async () => {
+    await invoke("add_timeout", {
+      team: side,
     });
   };
 
-  const decrementTimeout = async (team: Team) => {
-    if (team.timeouts == 0) return;
-    team.timeouts -= 1;
-
-    await invoke("update_timeouts", {
-      team: team.side,
-      timeouts: team.timeouts,
+  const removeTimeout = async () => {
+    await invoke("remove_timeout", {
+      team: side,
     });
   };
 
@@ -31,13 +23,19 @@ function TeamUi({ team }: { team: Team }) {
         <h1>{team.name}</h1>
         <div className="player-exclusions">
           <h2>Timeout: {team.timeouts}</h2>
-          <button onClick={() => incrementTimeout(team)}>+</button>
-          <button onClick={() => decrementTimeout(team)}>- </button>
+          <button onClick={() => addTimeout()}>+</button>
+          <button onClick={() => removeTimeout()}>- </button>
         </div>
       </div>
       <div className="player-list">
+        <div className="player-header player">
+          <span>Player</span>
+          <span>Name</span>
+          <span>Exclusions</span>
+          <span>Goals</span>
+        </div>
         {team.players.map((player) => (
-          <PlayerUi player={player} team={team.side} />
+          <PlayerUi player={player} team={side} />
         ))}
       </div>
     </div>

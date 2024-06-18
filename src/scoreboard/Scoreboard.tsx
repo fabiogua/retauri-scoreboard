@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import "./Scoreboard.css";
+import"../styles/Scoreboard.css";
 import { listen } from "@tauri-apps/api/event";
 import TeamUi from "./Team";
 import { Team, TeamEnum } from "../Data";
@@ -38,6 +38,7 @@ function Controlboard() {
   });
 
   const [time, setTime] = useState("00:00");
+  const [quater, setQuater] = useState(1);
 
   useEffect(() => {
     const unlistenExclusion = listen(
@@ -73,6 +74,24 @@ function Controlboard() {
         : setGuestTeam({ ...team });
     }
     );
+
+
+    const updateTimeStats = listen("update_time_stats", (event: any) => {
+      const payload = event.payload;
+
+      const timeInSec = payload.time/1000;
+
+      const tenMinutes = Math.floor(timeInSec / 600);
+      const minutes = Math.floor(timeInSec / 60);
+
+      const tenSeconds = Math.floor(timeInSec % 60 / 10);
+      const seconds = Math.floor(timeInSec % 60 % 10);
+
+
+      setTime(`${tenMinutes}${minutes}:${tenSeconds}${seconds}`);
+      setQuater(payload.quater);
+
+    });
 
     const updateTime = listen("update_time", (event: any) => {
       const payload = event.payload;

@@ -1,5 +1,5 @@
 import { Player } from "../Data";
-import "./Player.css";
+import"../styles/Player.css";
 
 function PlayerUi({ player }: { player: Player}) {
 

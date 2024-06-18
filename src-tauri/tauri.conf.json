@@ -18,6 +18,9 @@
       },
       "dialog": {
         "all": true
+      },
+      "window": {
+        "all": true
       }
     },
     "windows": [
@@ -25,15 +28,13 @@
         "label": "main",
         "title": "Retauri Scoreboard",
         "width": 800,
-        "height": 600,
         "resizable": true,
         "url": "index.html"
       },
       {
         "label": "scoreboard",
         "title": "Scoreboard",
-        "width": 1200,
-        "height": 600,
+        "width": 1400,
         "resizable": true,
         "url": "index.html/#/scoreboard"
       },
@@ -41,7 +42,6 @@
         "label": "controlboard",
         "title": "Controlboard",
         "width": 1400,
-        "height": 600,
         "resizable": true,
         "url": "index.html/#/controlboard"
       }
