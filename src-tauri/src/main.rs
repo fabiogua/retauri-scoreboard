@@ -540,8 +540,8 @@ fn reset_match(app: AppHandle) {
 #[command]
 fn start_match(app: AppHandle) {
 
-    // app.get_window("main")
-    //     .expect("error while getting main window").hide().expect("error while hiding main window");
+    app.get_window("main")
+        .expect("error while getting main window").hide().expect("error while hiding main window");
 
     app.get_window("scoreboard")
         .expect("error while getting main window").show().expect("error while showing main window");

@@ -6,7 +6,7 @@ import Controlboard from "./controlboard/Controlboard";
 import Settings from "./settings/Settings";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
- <HashRouter>
+  <HashRouter>
     <React.StrictMode>
       <Routes>
         <Route path="/settings" element={<Settings />} />
@@ -14,5 +14,5 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         <Route path="/controlboard" element={<Controlboard />} />
       </Routes>
     </React.StrictMode>
-  </HashRouter>,
+  </HashRouter>
 );
