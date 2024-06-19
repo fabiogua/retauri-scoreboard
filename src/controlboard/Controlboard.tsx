@@ -11,15 +11,15 @@ import {
   TimeoutStats,
 } from "../Data";
 import MatchInfo from "./MatchInfo";
-import buzzer from "../../src/assets/buzzer.mp3"
+import buzzer from "../../src/assets/buzzer.mp3";
 
-const audio = new Audio(buzzer);
+let  audio = new Audio(buzzer);
 
+audio.volume = 0.5;
+audio.pause();
+audio.currentTime = 0;
 
 function Controlboard() {
-
-
-
   const [homeTeam, setHomeTeam] = useState<Team>({
     name: "Home Team",
     score: 0,
@@ -66,20 +66,23 @@ function Controlboard() {
   const [isRunning, setIsRunning] = useState(false);
 
   useEffect(() => {
+    const handleKeyPress = (event: any) => {
+      if (!audio.paused)
+        return;
 
-    const handleKeyPress = (event:any) => {
-
-      if (event.key === 'Enter') {
+      if (event.key === "Enter" ) {
         playSound();
       }
     };
 
-    const handleKeyUp = (event:any) => {
-      if (event.key === 'Enter') {
-      console.log('stop sound pressed', event.key);
+    const handleKeyUp = (event: any) => {
+      if (audio.paused)
+        return;
+
+      if (event.key === "Enter" ) {
         stopSound();
       }
-    }
+    };
 
     const unlistenMatchStats = listen("update_match_stats", (event: any) => {
       const payload: MatchStats = event.payload;
@@ -140,27 +143,24 @@ function Controlboard() {
       setIsTimeout(false);
     });
 
-    
-
-    window.addEventListener('keydown', handleKeyPress);
-    window.addEventListener('keyup', handleKeyUp);
+    window.addEventListener("keydown", handleKeyPress);
+    window.addEventListener("keyup", handleKeyUp);
 
     return () => {
       updateTimeStats.then((f) => f());
       unlistenMatchStats.then((f) => f());
       updateTimeoutStats.then((f) => f());
-      window.removeEventListener('keaydown', handleKeyPress);
-      window.removeEventListener('keyup', handleKeyUp);
+      window.removeEventListener("keaydown", handleKeyPress);
+      window.removeEventListener("keyup", handleKeyUp);
     };
   }, []);
 
-  function playSound () {
-      audio.volume = 0.5;
-      if (audio.paused)
-      audio.play()
-  };
+  function playSound() {
+    if (audio.paused)
+      audio.play();
+  }
 
-  function stopSound () {
+  function stopSound() {
     if (!audio.paused) {
       audio.pause();
       audio.currentTime = 0;
@@ -170,7 +170,12 @@ function Controlboard() {
   return (
     <div className="controlboard">
       <TeamUi team={homeTeam} side={TeamEnum.home} />
-      <MatchInfo isRunning={isRunning} time={time} quater={quater} isTimeout={isTimeout} />
+      <MatchInfo
+        isRunning={isRunning}
+        time={time}
+        quater={quater}
+        isTimeout={isTimeout}
+      />
       <TeamUi team={guestTeam} side={TeamEnum.guest} />
     </div>
   );
