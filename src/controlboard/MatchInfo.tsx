@@ -2,7 +2,7 @@ import { useState } from "react";
 import "../styles/MatchInfo.css";
 import { invoke } from "@tauri-apps/api";
 
-function MatchInfo({ time, quater, isTimeout }: { time: string; quater: number, isTimeout: boolean}) {
+function MatchInfo({ time, quater, isTimeout, isRunning }: { time: string; quater: number, isTimeout: boolean, isRunning:boolean}) {
   const [isTimeEditing, setIsTimeEditing] = useState(false);
   const [isQuaterEditing, setIsQuaterEditing] = useState(false);
   const [tmpTime, setTmpTime] = useState(time);
@@ -107,8 +107,9 @@ function MatchInfo({ time, quater, isTimeout }: { time: string; quater: number, 
           ) : (
             <h1 onDoubleClick={() => {setIsTimeEditing(true); setTmpTime("")}}>{time}</h1>
           )}
-          <button onClick={toggle_timer}>Toggle</button>
+          <button onClick={toggle_timer}>{isRunning?"Stop":"Start"}</button>
           <button onClick={toggle_timeout}>Timeout</button>
+
         </div>
         <div className="period">
 

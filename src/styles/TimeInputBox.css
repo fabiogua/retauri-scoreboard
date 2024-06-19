@@ -1,0 +1,9 @@
+.time{
+  width: 100%;
+}
+
+.time-input-box{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

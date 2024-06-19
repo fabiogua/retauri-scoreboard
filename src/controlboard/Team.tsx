@@ -1,6 +1,8 @@
 import { invoke } from "@tauri-apps/api";
 import { Team, TeamEnum } from "../Data";
 import PlayerUi from "./Player";
+import IncrementComponent from "./IncrementComponent";
+
 import "../styles/Team.css";
 
 function TeamUi({ team, side }: { team: Team; side: TeamEnum }) {
@@ -21,23 +23,28 @@ function TeamUi({ team, side }: { team: Team; side: TeamEnum }) {
       <div className="team-header">
         <h1>{team.score}</h1>
         <h1>{team.name}</h1>
-        <div className="player-exclusions">
-          <h2>Timeout: {team.timeouts}</h2>
-          <button onClick={() => addTimeout()}>+</button>
-          <button onClick={() => removeTimeout()}>- </button>
-        </div>
+        <IncrementComponent
+          value={team.timeouts}
+          max={2}
+          increment={addTimeout}
+          decrement={removeTimeout}
+        />
       </div>
-      <div className="player-list">
-        <div className="player-header player">
-          <span>Player</span>
-          <span>Name</span>
-          <span>Exclusions</span>
-          <span>Goals</span>
-        </div>
-        {team.players.map((player) => (
-          <PlayerUi player={player} team={side} />
-        ))}
-      </div>
+      <table className="player-list">
+        <thead>
+          <tr>
+            <th>Nr</th>
+            <th>Name</th>
+            <th>Ausschlussfehler</th>
+            <th>Tore</th>
+          </tr>
+        </thead>
+        <tbody>
+          {team.players.map((player) => (
+            <PlayerUi player={player} team={side} />
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

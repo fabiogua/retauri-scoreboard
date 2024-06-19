@@ -1,0 +1,20 @@
+.increment-component {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+
+  .max-value {
+    color: red;
+  }
+}
+
+.increment-value-1 {
+  width: 20px;
+}
+
+.increment-value-2 {
+  width: 40px;
+}

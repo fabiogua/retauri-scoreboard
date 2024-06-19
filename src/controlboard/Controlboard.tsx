@@ -44,8 +44,6 @@ function Controlboard() {
   });
 
   const mapTeamStatsToTeam = (teamStats: TeamStats): Team => {
-    console.log(teamStats);
-
     return {
       name: teamStats.name,
       score: teamStats.player_stats.reduce(
@@ -60,12 +58,12 @@ function Controlboard() {
   const [time, setTime] = useState("08:00");
   const [quater, setQuater] = useState(1);
   const [isTimeout, setIsTimeout] = useState(false);
+  const [isRunning, setIsRunning] = useState(false);
 
   let audio = new Audio(buzzer);
 
   useEffect(() => {
     const handleKeyPress = (event:any) => {
-      console.log(event.key);
       if (event.key === 'Enter') {
         playSound();
       }
@@ -100,13 +98,13 @@ function Controlboard() {
 
       setIsTimeout(true);
 
-      // if (payload.time === 15000) {
-      //   playSound();
-      // }
+      if (payload.time === 15000) {
+        playSound();
+      }
 
-      // if (payload.time === 12000) {
-      //   stopSound();
-      // }
+      if (payload.time === 12000) {
+        stopSound();
+      }
     });
 
     const updateTimeStats = listen("update_time_stats", (event: any) => {
@@ -132,6 +130,7 @@ function Controlboard() {
         setTime(`${tenMinutes}${minutes}:${tenSeconds}${seconds}`);
       }
       setQuater(payload.quater);
+      setIsRunning(payload.is_running);
       setIsTimeout(false);
     });
 
@@ -160,9 +159,9 @@ function Controlboard() {
   }
 
   return (
-    <div className="teams">
+    <div className="controlboard">
       <TeamUi team={homeTeam} side={TeamEnum.home} />
-      <MatchInfo time={time} quater={quater} isTimeout={isTimeout} />
+      <MatchInfo isRunning={isRunning} time={time} quater={quater} isTimeout={isTimeout} />
       <TeamUi team={guestTeam} side={TeamEnum.guest} />
     </div>
   );
