@@ -5,13 +5,14 @@ import Scoreboard from "./scoreboard/Scoreboard";
 import Controlboard from "./controlboard/Controlboard";
 import Settings from "./settings/Settings";
 
+
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <HashRouter>
     <React.StrictMode>
       <Routes>
         <Route path="/settings" element={<Settings />} />
         <Route path="/scoreboard" element={<Scoreboard />} />
-        <Route path="/controlboard" element={<Controlboard />} />
+        <Route path="/controlboard" element={<Controlboard/>} />
       </Routes>
     </React.StrictMode>
   </HashRouter>

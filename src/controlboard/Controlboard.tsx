@@ -11,10 +11,15 @@ import {
   TimeoutStats,
 } from "../Data";
 import MatchInfo from "./MatchInfo";
-
 import buzzer from "../../src/assets/buzzer.mp3"
 
+const audio = new Audio(buzzer);
+
+
 function Controlboard() {
+
+
+
   const [homeTeam, setHomeTeam] = useState<Team>({
     name: "Home Team",
     score: 0,
@@ -60,10 +65,10 @@ function Controlboard() {
   const [isTimeout, setIsTimeout] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
 
-  let audio = new Audio(buzzer);
-
   useEffect(() => {
+
     const handleKeyPress = (event:any) => {
+
       if (event.key === 'Enter') {
         playSound();
       }
@@ -71,6 +76,7 @@ function Controlboard() {
 
     const handleKeyUp = (event:any) => {
       if (event.key === 'Enter') {
+      console.log('stop sound pressed', event.key);
         stopSound();
       }
     }
@@ -134,20 +140,23 @@ function Controlboard() {
       setIsTimeout(false);
     });
 
-    window.addEventListener('keypress', handleKeyPress);
+    
+
+    window.addEventListener('keydown', handleKeyPress);
     window.addEventListener('keyup', handleKeyUp);
 
     return () => {
       updateTimeStats.then((f) => f());
       unlistenMatchStats.then((f) => f());
       updateTimeoutStats.then((f) => f());
-      window.removeEventListener('keypress', handleKeyPress);
+      window.removeEventListener('keaydown', handleKeyPress);
       window.removeEventListener('keyup', handleKeyUp);
     };
   }, []);
 
   function playSound () {
       audio.volume = 0.5;
+      if (audio.paused)
       audio.play()
   };
 
