@@ -1,11 +1,16 @@
-.team-header {
-  display: flex;
-  gap: 50px;
+.team {
+  width: 35%;
 }
 
-.player-list {
+.team-header {
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-around;
+  align-items: end;
   align-items: center;
+  height: 10%;
+}
+
+.player-list{
+  height: 90%;
+  width: 100%;
 }

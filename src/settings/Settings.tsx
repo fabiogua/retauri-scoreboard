@@ -1,12 +1,13 @@
 import { invoke } from "@tauri-apps/api";
 import { useState } from "react";
-import "./Settings.css";
+import "../styles/Settings.css";
+import TimeBox from "./TimeBox";
 
 function Settings() {
-  const [quarterLength, setQuarterLength] = useState(8 * 60);
-  const [shortBreakLength, setShortBreakLength] = useState(2 * 60);
-  const [longBreakLength, setLongBreakLength] = useState(3 * 60);
-  const [timeoutLength, setTimeoutLength] = useState(1 * 60);
+  const [quarterLength, setQuarterLength] = useState(800);
+  const [shortBreakLength, setShortBreakLength] = useState(200);
+  const [longBreakLength, setLongBreakLength] = useState(300);
+  const [timeoutLength, setTimeoutLength] = useState(100);
 
   async function startMatch() {
     saveSettings();
@@ -15,20 +16,12 @@ function Settings() {
 
   async function saveSettings() {
     await invoke("save_settings", {
-      quatertime: quarterLength * 1000,
-      shortpause: shortBreakLength * 1000,
-      longpause: longBreakLength * 1000,
-      timeout: timeoutLength * 1000,
+      quatertime: quarterLength * 600,
+      shortpause: shortBreakLength * 600,
+      longpause: longBreakLength * 600,
+      timeout: timeoutLength * 600,
     });
   }
-
-  const handleTimeChange = (setter: any) => (e: any, type: string) => {
-    let value = e.target.value;
-    if (value === "") value = "0";
-    const minutes = type === "minutes" ? parseInt(value) : 0;
-    const seconds = type === "seconds" ? parseInt(value) : 0;
-    setter(() =>  minutes * 60 + seconds);
-  };
 
   return (
     <div className="settings-container">
@@ -40,115 +33,26 @@ function Settings() {
         Zum Beispiel:
         <ul>
           <li>
-            8 Minuten: <strong>8</strong> und <strong>0</strong>
+            8 Minuten: <strong>800</strong> oder <strong>0800</strong>
           </li>
           <li>
-            30 Sekunden: <strong>0</strong> und <strong>30</strong>
+            30 Sekunden: <strong>0030</strong> oder <strong>30</strong>
           </li>
         </ul>
       </p>
-      <div className="match-settings">
-        <div className="match-settings__input-group">
-          <label htmlFor="quarter-length-minutes">Viertelzeit</label>
-          <div className="time-inputs">
-            <input
-              type="text"
-              id="quarter-length-minutes"
-              name="quarter-length-minutes"
-              placeholder={(quarterLength / 60).toString()}
-              maxLength={2}
-              pattern="[0-5][0-9]"
-              onChange={(e) => handleTimeChange(setQuarterLength)(e, "minutes")}
-            />
-            <input
-              type="text"
-              id="quarter-length-seconds"
-              name="quarter-length-seconds"
-              placeholder={(quarterLength % 60).toString()}
-              maxLength={2}
-              pattern="[0-5][0-9]"
-              onChange={(e) => handleTimeChange(setQuarterLength)(e, "seconds")}
-            />
-          </div>
-        </div>
-        <div className="match-settings__input-group">
-          <label htmlFor="short-break-length-minutes">Kurze Pause</label>
-          <div className="time-inputs">
-            <input
-              type="text"
-              id="short-break-length-minutes"
-              name="short-break-length-minutes"
-              placeholder={(shortBreakLength / 60).toString()}
-              maxLength={2}
-              pattern="[0-5][0-9]"
-              onChange={(e) =>
-                handleTimeChange(setShortBreakLength)(e, "minutes")
-              }
-            />
-            <input
-              type="text"
-              id="short-break-length-seconds"
-              name="short-break-length-seconds"
-              placeholder={(shortBreakLength % 60).toString()}
-              maxLength={2}
-              pattern="[0-5][0-9]"
-              onChange={(e) =>
-                handleTimeChange(setShortBreakLength)(e, "seconds")
-              }
-            />
-          </div>
-        </div>
-        <div className="match-settings__input-group">
-          <label htmlFor="long-break-length-minutes">Lange Pause</label>
-          <div className="time-inputs">
-            <input
-              type="text"
-              id="long-break-length-minutes"
-              name="long-break-length-minutes"
-              placeholder={(longBreakLength / 60).toString()}
-              maxLength={2}
-              pattern="[0-5][0-9]"
-              onChange={(e) =>
-                handleTimeChange(setLongBreakLength)(e, "minutes")
-              }
-            />
-            <input
-              type="text"
-              id="long-break-length-seconds"
-              name="long-break-length-seconds"
-              placeholder={(longBreakLength % 60).toString()}
-              maxLength={2}
-              pattern="[0-5][0-9]"
-              onChange={(e) =>
-                handleTimeChange(setLongBreakLength)(e, "seconds")
-              }
-            />
-          </div>
-        </div>
-        <div className="match-settings__input-group">
-          <label htmlFor="timeout-length-minutes">Timeout</label>
-          <div className="time-inputs">
-            <input
-              type="text"
-              id="timeout-length-minutes"
-              name="timeout-length-minutes"
-              placeholder={(timeoutLength / 60).toString()}
-              maxLength={2}
-              pattern="[0-5][0-9]"
-              onChange={(e) => handleTimeChange(setTimeoutLength)(e, "minutes")}
-            />
-            <input
-              type="text"
-              id="timeout-length-seconds"
-              name="timeout-length-seconds"
-              placeholder={(timeoutLength % 60).toString()}
-              maxLength={2}
-              pattern="[0-5][0-9]"
-              onChange={(e) => handleTimeChange(setTimeoutLength)(e, "seconds")}
-            />
-          </div>
-        </div>
-      </div>
+      <table className="match-settings">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Konvertiert</th>
+            <th>Eingabe</th>
+          </tr>
+        </thead>
+        <TimeBox title="Viertelzeit" time={quarterLength} setTime={setQuarterLength} />
+        <TimeBox title="kurze Pause" time={shortBreakLength} setTime={setShortBreakLength} />
+        <TimeBox title="lange Pause" time={longBreakLength} setTime={setLongBreakLength} />
+        <TimeBox title="Timeout" time={timeoutLength} setTime={setTimeoutLength} />
+      </table>
       <button className="start-button" onClick={startMatch}>
         Match Starten
       </button>

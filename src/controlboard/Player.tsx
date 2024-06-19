@@ -1,6 +1,8 @@
 import { invoke } from "@tauri-apps/api";
-import "../styles/Player.css";
 import { Player, TeamEnum } from "../Data";
+import IncrementComponent from "./IncrementComponent";
+
+import "../styles/Player.css";
 
 function PlayerUi({ player, team }: { player: Player; team: TeamEnum }) {
   const addExclusion = async (
@@ -39,32 +41,20 @@ function PlayerUi({ player, team }: { player: Player; team: TeamEnum }) {
   };
 
   return (
-    <div className="player">
-      <div className="player-number">
+    <tr className="player">
+      <td className="player-number">
         <span>{player.number}</span>
-      </div>
-      <div className="player-name">
+      </td>
+      <td className="player-name">
         <span>{player.name}</span>
-      </div>
-      <div className="player-exclusions">
-        <button onClick={() => addExclusion(team, player.number)}>
-          +
-        </button>
-        <span>{player.exclusions}</span>
-        <button onClick={() => removeExclusion(team, player.number)}>
-          -
-        </button>
-      </div>
-      <div className="player-goals">
-        <button onClick={() => addGoal(team, player.number)}>
-          +
-        </button>
-        <span className="goals">{player.goals}</span>
-        <button onClick={() => removeGoal(team, player.number)}>
-          -
-        </button>
-      </div>
-    </div>
+      </td>
+      <td className="player-exclusions">
+      <IncrementComponent value={player.exclusions} max={3} increment={() => addExclusion(team, player.number)} decrement={() => removeExclusion(team, player.number)} />
+      </td>
+      <td className="player-goals">
+      <IncrementComponent value={player.goals} digit={2} increment={() => addGoal(team, player.number)} decrement={() => removeGoal(team, player.number)} />
+      </td>
+    </tr>
   );
 }
 

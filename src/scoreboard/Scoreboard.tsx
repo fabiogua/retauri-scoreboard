@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import "../styles/Controlboard.css";
+// import "../styles/Controlboard.css";
 import { listen } from "@tauri-apps/api/event";
 import TeamUi from "./Team";
 import { MatchStats, Team, TeamStats, TimeStats, TimeoutStats } from "../Data";
@@ -36,8 +36,6 @@ function Controlboard() {
 
   const mapTeamStatsToTeam = (teamStats: TeamStats): Team => {
     
-    console.log(teamStats);
-
     return {
       name: teamStats.name,
       score: teamStats.player_stats.reduce((acc, player) => acc + player.goals, 0),
@@ -112,11 +110,9 @@ function Controlboard() {
 
   return (
     <div className="main">
-      <div className="teams">
         <TeamUi team={homeTeam} />
         <MatchInfo time={time} quater={quater}/>
         <TeamUi team={guestTeam} />
-      </div>
     </div>
   );
 }

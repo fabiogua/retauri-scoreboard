@@ -39,6 +39,7 @@ export interface PlayerStats {
 export interface TimeStats {
   time: number;
   quater: number;
+  is_running: boolean;
 }
 
 export interface TimeoutStats{

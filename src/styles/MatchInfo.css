@@ -16,23 +16,6 @@
         font-weight: 500;
         width: 100%;
     }
-
-}
-
-.time{
-    width: 100%;
-}
-
-.time-input-box{
-    padding: 20px;
-    height: 150px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.time-input{
-    font-size: 2rem;
-    width: 100px;
 }
 
 .period{
