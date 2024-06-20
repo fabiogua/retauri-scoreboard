@@ -3,8 +3,11 @@ import { Player, TeamEnum } from "../Data";
 import IncrementComponent from "./IncrementComponent";
 
 import "../styles/Player.css";
+import { useState } from "react";
 
 function PlayerUi({ player, team }: { player: Player; team: TeamEnum }) {
+  const [tmpName, setTmpName] = useState(player.name);
+  
   const addExclusion = async (
     team: TeamEnum,
     playerNumber: number
@@ -40,14 +43,22 @@ function PlayerUi({ player, team }: { player: Player; team: TeamEnum }) {
     });
   };
 
+  const changeName = async (event: React.FocusEvent<HTMLInputElement>) => {
+    await invoke("change_name", {
+      team,
+      index: player.number - 1,
+      name: event.target.value,
+    });
+  };
+
   return (
     <tr className="player">
       <td className="player-number">
         <span>{player.number}</span>
       </td>
-      <td className="player-name">
-        <span>{player.name}</span>
-      </td>
+      {/* <td className="player-name">
+        <input type="text" value={tmpName} onBlur={changeName} onChange={(event) => setTmpName(event.target.value)} />
+      </td> */}
       <td className="player-exclusions">
       <IncrementComponent value={player.exclusions} max={3} increment={() => addExclusion(team, player.number)} decrement={() => removeExclusion(team, player.number)} />
       </td>

@@ -34,7 +34,7 @@ function TeamUi({ team, side }: { team: Team; side: TeamEnum }) {
         <thead>
           <tr>
             <th>Nr</th>
-            <th>Name</th>
+            {/* <th>Name</th> */}
             <th>Ausschlussfehler</th>
             <th>Tore</th>
           </tr>

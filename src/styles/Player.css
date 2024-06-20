@@ -8,31 +8,43 @@
   margin: 5px;
 }
 */
-  
+
 .player-number {
+  width: 15px;
+}
+
+.player-goals {
+  width: 20px;
+}
+
+.player-exclusions {
   width: 20px;
 }
 
 .player-name {
-  width: 100px;
+  max-width: 400px;
 }
 
-.player-goals .goals {
-  width: 20px;
+span {
+  height: 100%;
+  font-size: 2.2em;
+  font-weight: 400;
 }
 
-/* .player-exclusions {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
+input {
+  font-size: 1.5em;
+  font-weight: 400;
+  width: 150px;
 }
 
-.player-goals {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-}  */
+.scoreboard {
+  
+  .player-name{
+    max-width: 200px;
+  }
+    span {
+      font-weight: 500;
+      white-space:  nowrap;
+      text-align: center;
+  }
+}

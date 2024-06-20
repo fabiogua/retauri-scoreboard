@@ -2,7 +2,7 @@
   max-width: 600px;
   margin: 0 auto;
   padding: 20px;
-  font-family: Arial, sans-serif;
+  font-family:Verdana;
 }
 
 .settings-container h1 {
@@ -27,6 +27,20 @@
 
 .match-settings__input-group label {
   margin-bottom: 5px;
+}
+
+input.time-convert {
+  width: 180px;
+}
+
+.settings {
+  input.time-input {
+    width: 190px;
+  }
+
+  input {
+    font-size: 16px;
+  }
 }
 
 .start-button {

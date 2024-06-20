@@ -49,7 +49,7 @@ export interface TimeoutStats{
 }
 
 export enum TimeoutState {
-  started,
-  paused,
-  canceled,
+  Running ="Running",
+  Paused ="Paused",
+  Canceled="Canceled",
 }

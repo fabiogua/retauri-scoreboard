@@ -1,8 +1,18 @@
 import { useState } from "react";
-import "../styles/MatchInfo.css";
 import { invoke } from "@tauri-apps/api";
+import "../styles/MatchInfo.css";
 
-function MatchInfo({ time, quater, isTimeout, isRunning }: { time: string; quater: number, isTimeout: boolean, isRunning:boolean}) {
+function MatchInfo({
+  time,
+  quater,
+  isTimeout,
+  isRunning,
+}: {
+  time: string;
+  quater: number;
+  isTimeout: boolean;
+  isRunning: boolean;
+}) {
   const [isTimeEditing, setIsTimeEditing] = useState(false);
   const [isQuaterEditing, setIsQuaterEditing] = useState(false);
   const [tmpTime, setTmpTime] = useState(time);
@@ -19,14 +29,15 @@ function MatchInfo({ time, quater, isTimeout, isRunning }: { time: string; quate
   async function setTime() {
     setIsTimeEditing(false);
     const newTime =
-      (Number(tmpTime.substring(0, 2)) * 60 + Number(tmpTime.substring(3, 5)) )* 1000;
-    await invoke("set_time", {newTime: newTime, isTimeout: isTimeout} );
+      (Number(tmpTime.substring(0, 2)) * 60 + Number(tmpTime.substring(3, 5))) *
+      1000;
+    await invoke("set_time", { newTime: newTime, isTimeout: isTimeout });
   }
 
   async function setQuater() {
     setIsQuaterEditing(false);
     const newQuater = Number(tmpQuater);
-    await invoke("set_quater", {newQuater: newQuater} );
+    await invoke("set_quater", { newQuater: newQuater });
   }
 
   const handleChange = (event: any) => {
@@ -81,7 +92,7 @@ function MatchInfo({ time, quater, isTimeout, isRunning }: { time: string; quate
     if (!value.match(/[1-4]/)) return;
 
     setTmpQuater(value);
-  }
+  };
 
   return (
     <div className="match-info">
@@ -102,17 +113,23 @@ function MatchInfo({ time, quater, isTimeout, isRunning }: { time: string; quate
                   if (e.key === "Enter") setTime();
                   if (e.key === "Escape") setIsTimeEditing(false);
                 }}
+                onBlur={setTime}
               />
             </div>
           ) : (
-            <h1 onDoubleClick={() => {setIsTimeEditing(true); setTmpTime("")}}>{time}</h1>
+            <h1
+              onDoubleClick={() => {
+                setIsTimeEditing(true);
+                setTmpTime("");
+              }}
+            >
+              {time}
+            </h1>
           )}
-          <button onClick={toggle_timer}>{isRunning?"Stop":"Start"}</button>
+          <button onClick={toggle_timer}>{isRunning ? "Stop" : "Start"}</button>
           <button onClick={toggle_timeout}>Timeout</button>
-
         </div>
         <div className="period">
-
           {isQuaterEditing ? (
             <div className="quater-input-box">
               <input
@@ -122,6 +139,7 @@ function MatchInfo({ time, quater, isTimeout, isRunning }: { time: string; quate
                 onChange={(e) => {
                   handleQuaterChange(e);
                 }}
+                onBlur={setQuater}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") setQuater();
                   if (e.key === "Escape") setIsQuaterEditing(false);
@@ -129,7 +147,14 @@ function MatchInfo({ time, quater, isTimeout, isRunning }: { time: string; quate
               />
             </div>
           ) : (
-            <h3 onDoubleClick={() => {setIsQuaterEditing(true); setTmpQuater(quater.toString())}}>{quater}</h3>
+            <h3
+              onDoubleClick={() => {
+                setIsQuaterEditing(true);
+                setTmpQuater(quater.toString());
+              }}
+            >
+              {quater}
+            </h3>
           )}
         </div>
       </div>

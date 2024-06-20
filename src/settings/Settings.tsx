@@ -24,13 +24,16 @@ function Settings() {
   }
 
   return (
-    <div className="settings-container">
+    <div className="settings">
       <h1>Einstellungen</h1>
-      <p>
-        Bitte geben Sie die Zeitwerte für Minuten und Sekunden separat ein.
-        <br />
-        <br />
-        Zum Beispiel:
+      <div className="settings-header">
+        <p>
+          Bitte geben Sie die Zeitwerte für Minuten und Sekunden separat ein.
+          <br />
+          <br />
+          Zum Beispiel:
+        </p>
+
         <ul>
           <li>
             8 Minuten: <strong>800</strong> oder <strong>0800</strong>
@@ -39,7 +42,7 @@ function Settings() {
             30 Sekunden: <strong>0030</strong> oder <strong>30</strong>
           </li>
         </ul>
-      </p>
+      </div>
       <table className="match-settings">
         <thead>
           <tr>
@@ -48,10 +51,26 @@ function Settings() {
             <th>Eingabe</th>
           </tr>
         </thead>
-        <TimeBox title="Viertelzeit" time={quarterLength} setTime={setQuarterLength} />
-        <TimeBox title="kurze Pause" time={shortBreakLength} setTime={setShortBreakLength} />
-        <TimeBox title="lange Pause" time={longBreakLength} setTime={setLongBreakLength} />
-        <TimeBox title="Timeout" time={timeoutLength} setTime={setTimeoutLength} />
+        <TimeBox
+          title="Viertelzeit"
+          time={quarterLength}
+          setTime={setQuarterLength}
+        />
+        <TimeBox
+          title="kurze Pause"
+          time={shortBreakLength}
+          setTime={setShortBreakLength}
+        />
+        <TimeBox
+          title="lange Pause"
+          time={longBreakLength}
+          setTime={setLongBreakLength}
+        />
+        <TimeBox
+          title="Timeout"
+          time={timeoutLength}
+          setTime={setTimeoutLength}
+        />
       </table>
       <button className="start-button" onClick={startMatch}>
         Match Starten

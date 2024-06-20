@@ -8,6 +8,7 @@ import {
   TeamEnum,
   TeamStats,
   TimeStats,
+  TimeoutState,
   TimeoutStats,
 } from "../Data";
 import MatchInfo from "./MatchInfo";
@@ -21,7 +22,7 @@ audio.currentTime = 0;
 
 function Controlboard() {
   const [homeTeam, setHomeTeam] = useState<Team>({
-    name: "Home Team",
+    name: "Team",
     score: 0,
     timeouts: 0,
     players: [...Array(13)].map((_, i) => {
@@ -35,7 +36,7 @@ function Controlboard() {
   });
 
   const [guestTeam, setGuestTeam] = useState<Team>({
-    name: "Guest Team",
+    name: "Team",
     score: 0,
     timeouts: 0,
     players: [...Array(13)].map((_, i) => {
@@ -106,6 +107,8 @@ function Controlboard() {
       setTime(`${tenSeconds}${seconds}:${tenMiliseconds}${miliseconds}`);
 
       setIsTimeout(true);
+
+      setIsRunning(payload.state == TimeoutState.Running);
 
       if (payload.time === 15000) {
         playSound();
