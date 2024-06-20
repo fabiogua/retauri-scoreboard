@@ -1,0 +1,29 @@
+
+
+.exclusion {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 5px;
+    height: 100%;
+    width: 100%;
+}
+
+.exclusion-dot {
+    background-color: #fff;
+    border-radius: 50%;
+    height: 30px;
+    width: 30px;
+    border: 1px solid #fff;
+
+}
+
+.max {
+    background-color: #f00;
+    border: 1px solid #f00;
+
+}
+
+.empty {
+    background-color: transparent;
+}

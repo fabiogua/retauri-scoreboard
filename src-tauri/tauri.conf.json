@@ -36,16 +36,18 @@
       {
         "label": "scoreboard",
         "title": "Scoreboard",
-        "width": 1400,
         "resizable": true,
         "url": "index.html/#/scoreboard",
         "x": 1920,
-        "y": 0
+        "y": 0,
+        "width": 1920,
+        "height": 1080,
+        "fullscreen": true
       },
       {
         "label": "controlboard",
         "title": "Controlpanel",
-        "width": 1400,
+        "fullscreen": true,
         "resizable": true,
         "url": "index.html/#/controlboard"
       }

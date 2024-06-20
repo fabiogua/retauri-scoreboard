@@ -4,7 +4,7 @@
 use std::sync::{Arc, Mutex};
 
 use serde::{Deserialize, Serialize};
-use tauri::{command, generate_context, generate_handler, AppHandle, Builder, Manager};
+use tauri::{command, generate_context, generate_handler, AppHandle, Builder, Manager, Position, Window};
 use tokio::time::interval;
 
 #[derive(Serialize, Deserialize, Clone, Default, Debug)]
@@ -92,12 +92,14 @@ impl TimeoutStats {
 
     }
 
-    fn toggle_timer(&mut self) {
+    fn toggle_timer(&mut self, app: AppHandle) {
         self.state = match self.state {
             TimeoutState::Running => TimeoutState::Paused,
             TimeoutState::Paused => TimeoutState::Running,
             TimeoutState::Cancelled => TimeoutState::Cancelled,
         };
+
+        self.send_update(app);
     }
 
     fn set_time(&mut self,app: AppHandle, new_time: u32) {
@@ -149,10 +151,9 @@ impl TimeStats {
         self.send_update(app);
     }
 
-    fn toggle_timer(&mut self) {
+    fn toggle_timer(&mut self,app: AppHandle) {
         self.is_running = !self.is_running;
-        println!("timer toggled");
-        println!("timer is running: {}", self.is_running);
+        self.send_update(app.clone());
     }
 
     fn run_timer(&mut self, app: AppHandle, _time_step: u8) {
@@ -236,8 +237,8 @@ impl TimeStats {
 impl MatchStats {
     fn new() -> Self {
         Self {
-            home: TeamStats::new(),
-            guest: TeamStats::new(),
+            home: TeamStats::new(true),
+            guest: TeamStats::new(false),
         }
     }
 
@@ -249,8 +250,7 @@ impl MatchStats {
         };
 
         let player_stats = &mut team_stats.player_stats[index as usize];
-        player_stats.goals += 1;
-
+        player_stats.increase_goals();
         self.send_update(app);
     }
 
@@ -263,7 +263,7 @@ impl MatchStats {
 
         let player_stats = &mut team_stats.player_stats[index as usize];
         if player_stats.goals > 0 {
-            player_stats.goals -= 1;
+            player_stats.decrease_goals();
         }
 
         self.send_update(app);
@@ -280,7 +280,7 @@ impl MatchStats {
         if player_stats.exclusions == 3 {
             return;
         }
-        player_stats.exclusions += 1;
+        player_stats.increase_exclusions();
 
         self.send_update(app);
     }
@@ -293,7 +293,7 @@ impl MatchStats {
 
         let player_stats = &mut team_stats.player_stats[index as usize];
         if player_stats.exclusions > 0 {
-            player_stats.exclusions -= 1;
+            player_stats.decrease_exclusions();
         }
 
         self.send_update(app);
@@ -329,9 +329,22 @@ impl MatchStats {
         self.send_update(app);
     }
 
+    fn change_name(&mut self, app: AppHandle, team: &str, index: u8, name: String) {
+        let team_stats = if team == "home" {
+            &mut self.home
+        } else {
+            &mut self.guest
+        };
+
+        let player_stats = &mut team_stats.player_stats[index as usize];
+        player_stats.set_name(name);
+
+        self.send_update(app);
+    }
+
     fn reset(&mut self, app: AppHandle) {
-        self.home = TeamStats::new();
-        self.guest = TeamStats::new();
+        self.home = TeamStats::new(true);
+        self.guest = TeamStats::new(false);
 
         self.send_update(app);
     }
@@ -345,9 +358,9 @@ impl MatchStats {
 }
 
 impl TeamStats {
-    fn new() -> Self {
+    fn new(heim:bool) -> Self {
         Self {
-            name: "Team".to_string(),
+            name: if heim {"Heim"} else {"Gast"}.to_string(),
             timeouts: 0,
             player_stats: vec![
                 PlayerStats::new(1, "Player 1".to_string()),
@@ -376,6 +389,39 @@ impl PlayerStats {
             exclusions: 0,
         }
     }
+
+    fn set_name(&mut self, name: String) {
+        self.name = name;
+    }
+
+    fn set_number(&mut self, number: u8) {
+        self.number = number;
+    }
+
+    fn increase_goals(&mut self) {
+        self.goals += 1;
+    }
+
+    fn decrease_goals(&mut self) {
+        if self.goals > 0 {
+            self.goals -= 1;
+        }
+    }
+
+    fn increase_exclusions(&mut self) {
+        self.exclusions += 1;
+    }
+
+    fn decrease_exclusions(&mut self) {
+        if self.exclusions > 0 {
+            self.exclusions -= 1;
+        }
+    }
+
+    fn reset(&mut self) {
+        self.goals = 0;
+        self.exclusions = 0;
+    }
 }
 
 #[derive(Default, Clone, Copy, PartialEq, Serialize, Deserialize)]
@@ -402,12 +448,19 @@ pub struct AppState {
 }
 
 #[command]
-fn toggle_timer(state: tauri::State<AppState>) {
+fn toggle_timer(app: AppHandle,state: tauri::State<AppState>) {
     if state.timeout_stats.lock().unwrap().state != TimeoutState::Cancelled {
-        state.timeout_stats.lock().unwrap().toggle_timer();
+        state.timeout_stats.lock().unwrap().toggle_timer(app.clone());
         return;
     }
-    state.time_stats.lock().unwrap().toggle_timer();
+    state.time_stats.lock().unwrap().toggle_timer(app);
+}
+
+#[command]
+fn change_name(app: AppHandle, team: String, index: u8, name: String) {
+    app
+        .try_state::<AppState>()
+        .expect("error while getting app state").match_stats.lock().unwrap().change_name(app.clone(), &team, index, name);
 }
 
 #[command]
@@ -595,7 +648,8 @@ fn main() {
             reset_match,
             toggle_timeout,
             start_match,
-            save_settings
+            save_settings,
+            change_name
         ])
         .setup(|app| {
             const TIME_STEP: u8 = 10;
@@ -638,13 +692,10 @@ fn main() {
         .build(generate_context!())
         .expect("error while building tauri application");
 
-    // app.get_window("main".into())
-    //     .expect("error while getting main window")
-    //     .hide()
-    //     .expect("error while showing main window");
-    app.get_window( "scoreboard".into()).expect("error while getting scoreboard window").hide().expect("error while hiding scoreboard window");
-    app.get_window("controlboard".into()).expect("error while getting controlboard window").hide().expect("error while hiding controlboard window");
+        app.get_window( "scoreboard".into()).expect("error while getting scoreboard window").hide().expect("error while hiding scoreboard window");
 
+        app.get_window("controlboard".into()).expect("error while getting controlboard window").hide().expect("error while hiding controlboard window");
+    
     app.run(|_, _| {});
 }
 

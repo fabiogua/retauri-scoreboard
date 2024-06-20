@@ -1,13 +1,19 @@
 import { useEffect, useState } from "react";
-// import "../styles/Controlboard.css";
+import "../styles/Controlboard.css";
 import { listen } from "@tauri-apps/api/event";
-import TeamUi from "./Team";
-import { MatchStats, Team, TeamStats, TimeStats, TimeoutStats } from "../Data";
-import MatchInfo from "./MatchInfo";
+import TeamUi from "./STeamUi";
+import {
+  MatchStats,
+  Team,
+  TeamStats,
+  TimeStats,
+  TimeoutStats,
+} from "../Data";
+import MatchInfo from "./SMatchInfo";
 
-function Controlboard() {
+function Scoreboard() {
   const [homeTeam, setHomeTeam] = useState<Team>({
-    name: "Home Team",
+    name: "Heim",
     score: 0,
     timeouts: 0,
     players: [...Array(13)].map((_, i) => {
@@ -21,7 +27,7 @@ function Controlboard() {
   });
 
   const [guestTeam, setGuestTeam] = useState<Team>({
-    name: "Guest Team",
+    name: "Gast",
     score: 0,
     timeouts: 0,
     players: [...Array(13)].map((_, i) => {
@@ -35,20 +41,19 @@ function Controlboard() {
   });
 
   const mapTeamStatsToTeam = (teamStats: TeamStats): Team => {
-    
     return {
       name: teamStats.name,
-      score: teamStats.player_stats.reduce((acc, player) => acc + player.goals, 0),
+      score: teamStats.player_stats.reduce(
+        (acc, player) => acc + player.goals,
+        0
+      ),
       timeouts: teamStats.timeouts,
       players: teamStats.player_stats,
     };
   };
 
-  
-
   const [time, setTime] = useState("08:00");
   const [quater, setQuater] = useState(1);
-
 
   useEffect(() => {
     const unlistenMatchStats = listen("update_match_stats", (event: any) => {
@@ -73,11 +78,10 @@ function Controlboard() {
       setTime(`${tenSeconds}${seconds}:${tenMiliseconds}${miliseconds}`);
     });
 
-
     const updateTimeStats = listen("update_time_stats", (event: any) => {
-      const payload : TimeStats= event.payload;
+      const payload: TimeStats = event.payload;
 
-      if (payload.time < 60*1000) {
+      if (payload.time < 60 * 1000) {
         const timeInTenMiliseconds = payload.time / 10;
         const tenSeconds = Math.floor(timeInTenMiliseconds / 1000);
         const seconds = Math.floor((timeInTenMiliseconds % 1000) / 100);
@@ -85,17 +89,16 @@ function Controlboard() {
         const miliseconds = Math.floor(timeInTenMiliseconds % 10);
 
         setTime(`${tenSeconds}${seconds}:${tenMiliseconds}${miliseconds}`);
-      }
-      else {
-      const timeInSec = payload.time / 1000;
+      } else {
+        const timeInSec = payload.time / 1000;
 
-      const tenMinutes = Math.floor(timeInSec / 600);
-      const minutes = Math.floor(timeInSec / 60);
+        const tenMinutes = Math.floor(timeInSec / 600);
+        const minutes = Math.floor(timeInSec / 60);
 
-      const tenSeconds = Math.floor((timeInSec % 60) / 10);
-      const seconds = Math.floor((timeInSec % 60) % 10);
+        const tenSeconds = Math.floor((timeInSec % 60) / 10);
+        const seconds = Math.floor((timeInSec % 60) % 10);
 
-      setTime(`${tenMinutes}${minutes}:${tenSeconds}${seconds}`);
+        setTime(`${tenMinutes}${minutes}:${tenSeconds}${seconds}`);
       }
       setQuater(payload.quater);
     });
@@ -107,14 +110,18 @@ function Controlboard() {
     };
   }, []);
 
-
   return (
-    <div className="main">
-        <TeamUi team={homeTeam} />
-        <MatchInfo time={time} quater={quater}/>
-        <TeamUi team={guestTeam} />
+    <div className="scoreboard">
+      <TeamUi team={homeTeam}  />
+      <MatchInfo 
+        homeTeam={homeTeam}
+        guestTeam={guestTeam}
+        time={time}
+        quater={quater}
+      />
+      <TeamUi team={guestTeam}  />
     </div>
   );
 }
 
-export default Controlboard;
+export default Scoreboard;
