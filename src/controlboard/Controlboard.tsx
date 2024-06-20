@@ -141,6 +141,11 @@ function Controlboard() {
 
         setTime(`${tenMinutes}${minutes}:${tenSeconds}${seconds}`);
       }
+
+      if (payload.time === 0) {
+        playSound();
+      }
+      
       setQuater(payload.quater);
       setIsRunning(payload.is_running);
       setIsTimeout(false);
