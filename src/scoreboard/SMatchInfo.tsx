@@ -2,7 +2,7 @@ import { Team, TeamEnum } from "../Data";
 import SMatchInfoTeam from "./SMatchInfoTeam";
 import "../styles/MatchInfo.css";
 
-import logo from "/home/xmg/Projects/barracudas/retauri-scoreboard/src/assets/logos/nuernberg.png";
+import logo from "../assets/logos/nuernberg.png";
 
 function SMatchInfo({
   time,
