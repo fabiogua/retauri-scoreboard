@@ -3,11 +3,8 @@ import { Player, TeamEnum } from "../Data";
 import IncrementComponent from "./IncrementComponent";
 
 import "../styles/Player.css";
-import { useState } from "react";
 
 function PlayerUi({ player, team }: { player: Player; team: TeamEnum }) {
-  const [tmpName, setTmpName] = useState(player.name);
-  
   const addExclusion = async (
     team: TeamEnum,
     playerNumber: number
@@ -40,14 +37,6 @@ function PlayerUi({ player, team }: { player: Player; team: TeamEnum }) {
     await invoke("remove_goal", {
       team,
       index: playerNumber - 1,
-    });
-  };
-
-  const changeName = async (event: React.FocusEvent<HTMLInputElement>) => {
-    await invoke("change_name", {
-      team,
-      index: player.number - 1,
-      name: event.target.value,
     });
   };
 
