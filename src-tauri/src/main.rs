@@ -70,6 +70,7 @@ impl TimeStats {
             self.timeout_time -= time_step;
         } else {
             self.timeout_time = 0;
+            self.is_running = false;
             self.timeout_state = TimeoutState::Cancelled;
         }
     }
