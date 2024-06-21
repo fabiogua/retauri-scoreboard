@@ -8,8 +8,6 @@ import {
   TeamEnum,
   TeamStats,
   TimeStats,
-  TimeoutState,
-  TimeoutStats,
 } from "../Data";
 import MatchInfo from "./MatchInfo";
 import buzzer from "../../src/assets/buzzer.mp3";
