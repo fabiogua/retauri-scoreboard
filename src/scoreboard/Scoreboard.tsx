@@ -66,23 +66,16 @@ function Scoreboard() {
       setGuestTeam(guest);
     });
 
-    const updateTimeoutStats = listen("update_timeout_stats", (event: any) => {
-      const payload: TimeoutStats = event.payload;
-
-      const timeInTenMiliseconds = payload.time / 10;
-      const tenSeconds = Math.floor(timeInTenMiliseconds / 1000);
-      const seconds = Math.floor((timeInTenMiliseconds % 1000) / 100);
-      const tenMiliseconds = Math.floor((timeInTenMiliseconds % 100) / 10);
-      const miliseconds = Math.floor(timeInTenMiliseconds % 10);
-
-      setTime(`${tenSeconds}${seconds}:${tenMiliseconds}${miliseconds}`);
-    });
-
     const updateTimeStats = listen("update_time_stats", (event: any) => {
       const payload: TimeStats = event.payload;
 
-      if (payload.time < 60 * 1000) {
-        const timeInTenMiliseconds = payload.time / 10;
+      var timeToUse = payload.time;
+
+      if (payload.timeout_state === "Running")
+        timeToUse = payload.timeout_time;
+
+      if (timeToUse < 60 * 1000) {
+        const timeInTenMiliseconds = timeToUse / 10;
         const tenSeconds = Math.floor(timeInTenMiliseconds / 1000);
         const seconds = Math.floor((timeInTenMiliseconds % 1000) / 100);
         const tenMiliseconds = Math.floor((timeInTenMiliseconds % 100) / 10);
@@ -90,7 +83,7 @@ function Scoreboard() {
 
         setTime(`${tenSeconds}${seconds}:${tenMiliseconds}${miliseconds}`);
       } else {
-        const timeInSec = payload.time / 1000;
+        const timeInSec = timeToUse / 1000;
 
         const tenMinutes = Math.floor(timeInSec / 600);
         const minutes = Math.floor(timeInSec / 60);
@@ -106,7 +99,6 @@ function Scoreboard() {
     return () => {
       updateTimeStats.then((f) => f());
       unlistenMatchStats.then((f) => f());
-      updateTimeoutStats.then((f) => f());
     };
   }, []);
 

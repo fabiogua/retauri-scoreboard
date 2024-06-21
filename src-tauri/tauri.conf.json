@@ -3,8 +3,7 @@
     "beforeDevCommand": "pnpm dev",
     "beforeBuildCommand": "pnpm build",
     "devPath": "http://localhost:1420",
-    "distDir": "../dist",
-    "withGlobalTauri": true
+    "distDir": "../dist"
   },
   "package": {
     "productName": "retauri-scoreboard",
@@ -19,31 +18,24 @@
         "label": "main",
         "title": "Einstellungen",
         "resizable": false,
-        "minimizable": false,
-        "maximizable": false,
         "height": 800,
-        "url": "index.html/#/settings",
-        "closable": false
+        "url": "index.html/#/settings"
       },
       {
         "label": "scoreboard",
         "title": "Scoreboard",
-        "resizable": true,
         "url": "index.html/#/scoreboard",
         "x": 1920,
         "y": 0,
         "width": 1920,
         "height": 1080,
-        "fullscreen": true,
-        "closable": false
+        "fullscreen": true
       },
       {
         "label": "controlboard",
         "title": "Controlpanel",
         "fullscreen": true,
-        "resizable": true,
-        "url": "index.html/#/controlboard",
-        "closable": false
+        "url": "index.html/#/controlboard"
       }
     ],
     "security": {
