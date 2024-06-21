@@ -12,26 +12,18 @@
   },
   "tauri": {
     "allowlist": {
-      "all": false,
-      "shell": {
-        "all": false,
-        "open": true
-      },
-      "dialog": {
-        "all": true
-      },
-      "window": {
-        "all": true
-      }
-      
+      "all": true      
     },
     "windows": [
       {
         "label": "main",
         "title": "Einstellungen",
-        "resizable": true,
-        "height": 700,
-        "url": "index.html/#/settings"
+        "resizable": false,
+        "minimizable": false,
+        "maximizable": false,
+        "height": 800,
+        "url": "index.html/#/settings",
+        "closable": false
       },
       {
         "label": "scoreboard",
@@ -42,14 +34,16 @@
         "y": 0,
         "width": 1920,
         "height": 1080,
-        "fullscreen": true
+        "fullscreen": true,
+        "closable": false
       },
       {
         "label": "controlboard",
         "title": "Controlpanel",
         "fullscreen": true,
         "resizable": true,
-        "url": "index.html/#/controlboard"
+        "url": "index.html/#/controlboard",
+        "closable": false
       }
     ],
     "security": {

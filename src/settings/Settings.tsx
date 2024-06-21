@@ -1,9 +1,23 @@
 import { invoke } from "@tauri-apps/api";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../styles/Settings.css";
 import TimeBox from "./TimeBox";
 
 function Settings() {
+  useEffect(() => {
+    window.addEventListener("unload", async (ev) => {
+      ev.preventDefault();
+      await invoke("exit_app");
+    });
+
+    return () => {
+      window.removeEventListener("unload", async (ev) => {
+        ev.preventDefault();
+        await invoke("exit_app");
+      });
+    };
+  }, []);
+
   const [quarterLength, setQuarterLength] = useState(800);
   const [shortBreakLength, setShortBreakLength] = useState(200);
   const [longBreakLength, setLongBreakLength] = useState(300);
@@ -75,6 +89,11 @@ function Settings() {
       <button className="start-button" onClick={startMatch}>
         Match Starten
       </button>
+      <button className="quit-button"
+      onClick={ async () => {
+        await invoke("exit_app");
+      }
+      }>Beenden</button>
     </div>
   );
 }

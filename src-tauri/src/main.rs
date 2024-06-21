@@ -463,6 +463,12 @@ fn change_name(app: AppHandle, team: String, index: u8, name: String) {
         .expect("error while getting app state").match_stats.lock().unwrap().change_name(app.clone(), &team, index, name);
 }
 
+#[tauri::command]
+fn exit_app(app: AppHandle) {
+    println!("Exiting app");
+    app.exit(0);
+}
+
 #[command]
 fn set_time(app: AppHandle, new_time: u32, is_timeout: bool) {
 
@@ -649,13 +655,14 @@ fn main() {
             toggle_timeout,
             start_match,
             save_settings,
-            change_name
+            change_name,
+            exit_app
         ])
         .setup(|app| {
             const TIME_STEP: u8 = 10;
             let app_handle = app.handle();
             let app_handle_clone = app_handle.clone();
-
+            
             tauri::async_runtime::spawn(async move {
                 let mut interval = interval(tokio::time::Duration::from_millis(TIME_STEP.into()));
 
