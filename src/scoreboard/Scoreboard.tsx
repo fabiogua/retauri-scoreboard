@@ -7,7 +7,6 @@ import {
   Team,
   TeamStats,
   TimeStats,
-  TimeoutStats,
 } from "../Data";
 import MatchInfo from "./SMatchInfo";
 
