@@ -129,7 +129,8 @@ function Controlboard() {
         setTime(`${tenMinutes}${minutes}:${tenSeconds}${seconds}`);
       }
 
-      if (payload.time === 0) {
+      if (timeToUse === 0) {
+        stopSound();
         playSound();
       }
 
@@ -150,8 +151,9 @@ function Controlboard() {
   }, []);
 
   function playSound() {
-    if (audio.paused)
+    if (audio.paused){
       audio.play();
+    }
   }
 
   function stopSound() {
