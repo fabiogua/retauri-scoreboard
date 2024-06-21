@@ -5,7 +5,6 @@ import Scoreboard from "./scoreboard/Scoreboard";
 import Controlboard from "./controlboard/Controlboard";
 import Settings from "./settings/Settings";
 
-
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <HashRouter>
     <React.StrictMode>

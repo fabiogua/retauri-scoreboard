@@ -126,8 +126,12 @@ function MatchInfo({
               {time}
             </h1>
           )}
-          <button onClick={toggle_timer}>{isRunning ? "Stop" : "Start"}</button>
-          <button onClick={toggle_timeout}>Timeout</button>
+          <div className="time-buttons">
+            <button onClick={toggle_timer}>
+              {isRunning ? "Stop" : "Start"}
+            </button>
+            <button onClick={toggle_timeout}>Timeout</button>
+          </div>
         </div>
         <div className="period">
           {isQuaterEditing ? (
@@ -158,6 +162,14 @@ function MatchInfo({
           )}
         </div>
       </div>
+      <button
+        className="quit"
+        onClick={async () => {
+          await invoke("exit_app");
+        }}
+      >
+        Beenden
+      </button>
     </div>
   );
 }

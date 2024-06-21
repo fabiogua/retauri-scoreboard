@@ -2,8 +2,6 @@ import { Team, TeamEnum } from "../Data";
 import SMatchInfoTeam from "./SMatchInfoTeam";
 import "../styles/MatchInfo.css";
 
-import logo from "../assets/logos/nuernberg.png";
-
 function SMatchInfo({
   time,
   quater,
@@ -27,16 +25,16 @@ function SMatchInfo({
       </div>
       <div className="match-info-teams">
         <SMatchInfoTeam
+        src="assets/logos/nuernberg.png"
           side={TeamEnum.home}
           name={homeTeam.name}
           score={homeTeam.score}
-          src={logo}
         />
         <SMatchInfoTeam
           side={TeamEnum.guest}
           name={guestTeam.name}
           score={guestTeam.score}
-          src={logo}
+          src="assets/logos/nuernberg.png"
         />
       </div>
     </div>

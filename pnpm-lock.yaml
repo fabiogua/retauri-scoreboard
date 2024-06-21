@@ -14,18 +14,9 @@ dependencies:
   react-dom:
     specifier: ^18.2.0
     version: 18.3.1(react@18.3.1)
-  react-native-a-beep:
-    specifier: ^1.2.0
-    version: 1.2.0(react-native@0.64.4)
-  react-native-use-sound:
-    specifier: ^1.2.2
-    version: 1.2.2(react-native-sound@0.11.2)(react-native@0.64.4)(react@18.3.1)
   react-router-dom:
     specifier: ^6.23.1
     version: 6.23.1(react-dom@18.3.1)(react@18.3.1)
-  use-sound:
-    specifier: ^4.0.1
-    version: 4.0.1(react@18.3.1)
 
 devDependencies:
   '@tauri-apps/cli':
@@ -4621,6 +4612,14 @@ packages:
   /range-parser@1.2.1:
     resolution: {integrity: sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==}
     engines: {node: '>= 0.6'}
+    dev: false
+
+  /react-beforeunload@2.6.0(react@18.3.1):
+    resolution: {integrity: sha512-aKrGaRNc7fZQlDnmSYrXu4cbz9QEPhScA4A2mLxhjcULDy4VILLyLhSEjg2goIw3o5LQ1zss44kmQh5LXWYGCw==}
+    peerDependencies:
+      react: ^16.8.0 || 17 || 18
+    dependencies:
+      react: 18.3.1
     dev: false
 
   /react-devtools-core@4.28.5:

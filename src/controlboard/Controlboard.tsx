@@ -16,6 +16,7 @@ import buzzer from "../../src/assets/buzzer.mp3";
 
 let  audio = new Audio(buzzer);
 
+audio.loop= false
 audio.volume = 0.5;
 audio.pause();
 audio.currentTime = 0;
@@ -145,7 +146,7 @@ function Controlboard() {
       if (payload.time === 0) {
         playSound();
       }
-      
+
       setQuater(payload.quater);
       setIsRunning(payload.is_running);
       setIsTimeout(false);
@@ -153,7 +154,7 @@ function Controlboard() {
 
     window.addEventListener("keydown", handleKeyPress);
     window.addEventListener("keyup", handleKeyUp);
-
+   
     return () => {
       updateTimeStats.then((f) => f());
       unlistenMatchStats.then((f) => f());
