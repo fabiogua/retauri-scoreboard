@@ -86,10 +86,10 @@ function Settings() {
           setTime={setTimeoutLength}
         />
       </table>
-      <button className="start-button" onClick={startMatch}>
+      <button className="start-button" onClick={startMatch}  onAuxClick={blur}>
         Match Starten
       </button>
-      <button className="quit-button"
+      <button className="quit-button" onAuxClick={blur}
       onClick={ async () => {
         await invoke("exit_app");
       }

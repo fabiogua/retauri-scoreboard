@@ -127,10 +127,10 @@ function MatchInfo({
             </h1>
           )}
           <div className="time-buttons">
-            <button onClick={toggle_timer}>
+            <button onClick={toggle_timer} onAuxClick={blur}>
               {isRunning ? "Stop" : "Start"}
             </button>
-            <button onClick={toggle_timeout}>Timeout</button>
+            <button onClick={toggle_timeout} onAuxClick={blur} >Timeout</button>
           </div>
         </div>
         <div className="period">
@@ -162,7 +162,7 @@ function MatchInfo({
           )}
         </div>
       </div>
-      <button
+      <button onAuxClick={blur}
         className="quit"
         onClick={async () => {
           await invoke("exit_app");
