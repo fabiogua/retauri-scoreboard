@@ -19,9 +19,9 @@ const IncrementComponent: React.FC<IncrementComponentProps> = ({
 }) => {
   return (
     <div className="increment-component">
-      <button onClick={decrement}>-</button>
+      <button onAuxClick={blur} onClick={decrement}>-</button>
       <span className={`increment-value-${digit === 2 ? '2' : '1'} ${value === max ? 'max-value' : ''}`}>{value}</span>
-      <button onClick={increment}>+</button>
+      <button onAuxClick={blur} onClick={increment}>+</button>
     </div>
   );
 };
