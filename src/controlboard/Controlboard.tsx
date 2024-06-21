@@ -26,7 +26,7 @@ function Controlboard() {
     name: "Team",
     score: 0,
     timeouts: 0,
-    players: [...Array(13)].map((_, i) => {
+    players: [...Array(15)].map((_, i) => {
       return {
         name: `Player ${i + 1}`,
         number: i + 1,
@@ -40,7 +40,7 @@ function Controlboard() {
     name: "Team",
     score: 0,
     timeouts: 0,
-    players: [...Array(13)].map((_, i) => {
+    players: [...Array(15)].map((_, i) => {
       return {
         name: `Player ${i + 1}`,
         number: i + 1,

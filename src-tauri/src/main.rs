@@ -376,6 +376,8 @@ impl TeamStats {
                 PlayerStats::new(11, "Player 11".to_string()),
                 PlayerStats::new(12, "Player 12".to_string()),
                 PlayerStats::new(13, "Player 13".to_string()),
+                PlayerStats::new(14, "Player 14".to_string()),
+                PlayerStats::new(15, "Player 15".to_string()),
             ],
         }
     }
