@@ -75,7 +75,11 @@ impl TimeStats {
     }
 
     fn set_time(&mut self, app: AppHandle, new_time: u32) {
-        self.time = new_time;
+        if self.timeout_state == TimeoutState::Running {
+            self.timeout_time = new_time;
+        }else {
+            self.time = new_time;
+        }
         self.send_update(app)
     }
 
