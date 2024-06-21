@@ -1,23 +1,9 @@
 import { invoke } from "@tauri-apps/api";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import "../styles/Settings.css";
 import TimeBox from "./TimeBox";
 
 function Settings() {
-  useEffect(() => {
-    window.addEventListener("unload", async (ev) => {
-      ev.preventDefault();
-      await invoke("exit_app");
-    });
-
-    return () => {
-      window.removeEventListener("unload", async (ev) => {
-        ev.preventDefault();
-        await invoke("exit_app");
-      });
-    };
-  }, []);
-
   const [quarterLength, setQuarterLength] = useState(800);
   const [shortBreakLength, setShortBreakLength] = useState(200);
   const [longBreakLength, setLongBreakLength] = useState(300);

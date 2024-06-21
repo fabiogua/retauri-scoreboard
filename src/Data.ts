@@ -40,6 +40,8 @@ export interface TimeStats {
   time: number;
   quater: number;
   is_running: boolean;
+  timeout_time: number;
+  timeout_state: TimeoutState;
 }
 
 export interface TimeoutStats{
@@ -50,6 +52,5 @@ export interface TimeoutStats{
 
 export enum TimeoutState {
   Running ="Running",
-  Paused ="Paused",
   Canceled="Canceled",
 }
